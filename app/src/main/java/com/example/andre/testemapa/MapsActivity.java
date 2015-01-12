@@ -25,8 +25,8 @@ public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
-    double longitude;
-    double latitude;
+    double longitude=0.0;
+    double latitude=0.0;
     LocationManager lm;
     Location location;
     public TextView txtCTime;
@@ -64,17 +64,16 @@ public class MapsActivity extends FragmentActivity {
 
     public void updateLocation(Location location)
     {
-        double latitude, longitude;
-
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         int mph = convertSpeed(location.getSpeed());
-        txtCTime.setText("lat: "+latitude+" lng: "+longitude+" mph: "+mph);
+        txtCTime.setText("lat: "+latitude+"\nlng: "+longitude+"\nkph: "+mph);
     }
 
 
-    private int convertSpeed(float speed) {
-        int mph =(int)(2.236936D * speed);
+    private int convertSpeed(float speed)
+    {
+        int mph =(int)(3.6D*speed);
         return mph;
     }
 
@@ -93,23 +92,23 @@ public class MapsActivity extends FragmentActivity {
         public void onStatusChanged(String provider, int status, Bundle extras) {}
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    // lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
-
-
-
     @Override
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
     }
-
-
     ////////////////////////////////////////////////
     public void ClicouMemoriza(View v)
     {
-        txtCTime=(TextView)findViewById(R.id.textLatLong);
-        txtCTime.setText(new Date().toString());
-        Log.d("Debug","Teste");
+        // txtCTime=(TextView)findViewById(R.id.textLatLong);
+        // txtCTime.setText(new Date().toString());
+        // txtCTime.setText("csa de penha");
+
+        if(latitude!=0.0)
+        {
+            mMap.clear();
+            mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("Local"));
+        }
         return;
     }
     ///////////////////////////////////////////////
