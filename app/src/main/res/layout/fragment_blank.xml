@@ -1,0 +1,56 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.andre.testemapa.BlankFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="244dp"
+        android:layout_gravity="center_horizontal|top"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="201dp"
+            android:layout_height="30dp"
+            android:layout_gravity="left|top"
+            android:text="@string/amor" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="154dp"
+            android:layout_gravity="center_horizontal|top"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="103dp"
+                android:layout_height="wrap_content"
+                android:text="Memoriza"
+                android:onClick="ClicouMemoriza"
+                android:enabled="true"
+                android:elevation="2dp"
+                android:textSize="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Small Text"
+                android:id="@+id/textLatLong" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="355dp"
+        android:layout_height="287dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_margin="5dp" />
+
+
+</FrameLayout>
