@@ -134,6 +134,7 @@ public class MapsActivity extends FragmentActivity {
         if(latitude!=0.0)
         {
             // SendPostToServer();
+            tEnvia = new TreadEnviaServidor();
             tEnvia.latitude = latitude;
             tEnvia.longitude = longitude;
             tEnvia.mph = mph;

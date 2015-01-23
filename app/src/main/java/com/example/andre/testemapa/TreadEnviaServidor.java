@@ -82,10 +82,8 @@ public class TreadEnviaServidor extends AsyncTask<String,String,String>
         // Create a new HttpClient and Post Header
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost("http://192.168.1.107/ChildMonitor/Util/SendGlobalPosition.php");
-        Log.d("log_tag", "1 - /////////////////////////////////////////////////////////");
         try {
             // Add your data
-            Log.d("log_tag", "2 - /////////////////////////////////////////////////////////");
 
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
             nameValuePairs.add(new BasicNameValuePair("id", "12"));
@@ -93,15 +91,14 @@ public class TreadEnviaServidor extends AsyncTask<String,String,String>
             nameValuePairs.add(new BasicNameValuePair("Long", Double.toString(longitude)));
             nameValuePairs.add(new BasicNameValuePair("TimeStamp", currTime));
             nameValuePairs.add(new BasicNameValuePair("Velocity", Double.toString(mph)));
-            Log.d("log_tag", "3 - /////////////////////////////////////////////////////////");
 
 
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-            Log.d("log_tag", "4 - /////////////////////////////////////////////////////////");
 
             // Execute HTTP Post Request
             HttpResponse response = httpclient.execute(httppost);
-            Log.d("log_tag", "5 - /////////////////////////////////////////////////////////");
+
+            Log.d(response.toString()+"log_tag", "5 - /////////////////////////////////////////////////////////");
 
         } catch (ClientProtocolException e) {
             // TODO Auto-generated catch block
