@@ -1,6 +1,8 @@
 package com.example.andre.testemapa;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -17,7 +19,26 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static android.content.Context.*;
 
@@ -27,9 +48,12 @@ public class MapsActivity extends FragmentActivity {
 
     double longitude=0.0;
     double latitude=0.0;
+    double mph=0.0;
+    String currTime="";
     LocationManager lm;
     Location location;
     public TextView txtCTime;
+    java.sql.Timestamp currentTimestamp;
     ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,14 +90,16 @@ public class MapsActivity extends FragmentActivity {
     {
         latitude = location.getLatitude();
         longitude = location.getLongitude();
-        int mph = convertSpeed(location.getSpeed());
-        txtCTime.setText("lat: "+latitude+"\nlng: "+longitude+"\nkph: "+mph);
+        mph = convertSpeed(location.getSpeed());
+        currentTimestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
+        currTime = String.format("%1$TD %1$TT", currentTimestamp);
+        txtCTime.setText(currTime+" - lat: "+latitude+"\nlng: "+longitude+"\nkph: "+mph);
     }
 
 
-    private int convertSpeed(float speed)
+    private double convertSpeed(float speed)
     {
-        int mph =(int)(3.6D*speed);
+        double mph =(int)(3.6D*speed);
         return mph;
     }
 
@@ -98,6 +124,7 @@ public class MapsActivity extends FragmentActivity {
         setUpMapIfNeeded();
     }
     ////////////////////////////////////////////////
+    TreadEnviaServidor tEnvia;
     public void ClicouMemoriza(View v)
     {
         // txtCTime=(TextView)findViewById(R.id.textLatLong);
@@ -106,14 +133,69 @@ public class MapsActivity extends FragmentActivity {
 
         if(latitude!=0.0)
         {
+            // SendPostToServer();
+            tEnvia.latitude = latitude;
+            tEnvia.longitude = longitude;
+            tEnvia.mph = mph;
+            tEnvia.currTime = currTime;
+
+            tEnvia.execute("");
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("Local"));
+
         }
         return;
     }
     ///////////////////////////////////////////////
+    public static Bitmap RotateBitmap(Bitmap source, float angle)
+    {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+    ///////////////////////////////////////////////
+    // Pega valores de um site
+    public static JSONObject getJSONfromURL(String url) {
+        InputStream is = null;
+        String result = "";
+        JSONObject jArray = null;
 
+        // Download JSON data from URL
+        try {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost(url);
+            HttpResponse response = httpclient.execute(httppost);
+            HttpEntity entity = response.getEntity();
+            is = entity.getContent();
 
+        } catch (Exception e) {
+            Log.e("log_tag", "Error in http connection " + e.toString());
+        }
+
+        // Convert response to string
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            is.close();
+            result = sb.toString();
+        } catch (Exception e) {
+            Log.e("log_tag", "Error converting result " + e.toString());
+        }
+
+        try {
+
+            jArray = new JSONObject(result);
+        } catch (JSONException e) {
+            Log.e("log_tag", "Error parsing data " + e.toString());
+        }
+
+        return jArray;
+    }
+    ///////////////////////////////////////////////
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
      * installed) and the map has not already been instantiated.. This will ensure that we only ever
@@ -154,3 +236,6 @@ public class MapsActivity extends FragmentActivity {
 
 
 }
+
+
+

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">TesteMapa</string>
+    <string name="app_name">ChildMonitor</string>
     <string name="title_activity_maps">Map</string>
     <string name="bot_ok"></string>
     <string name="Popular">Popular</string>
