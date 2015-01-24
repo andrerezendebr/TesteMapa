@@ -81,11 +81,12 @@ public class MapsActivity extends FragmentActivity {
         final String PROVIDER = lm.getBestProvider(c, true);
 
         this.myLocationListener = new MyLocationListener();
-        this.lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0.0F, this.myLocationListener);
+        this.lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0.0F, this.myLocationListener);
         //lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0.0F, myLocationListener);
         txtCTime.setText("Esperando GPS");
     }
 
+    TreadEnviaServidor tEnvia;
     public void updateLocation(Location location)
     {
         latitude = location.getLatitude();
@@ -94,6 +95,15 @@ public class MapsActivity extends FragmentActivity {
         currentTimestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
         currTime = String.format("%1$TD %1$TT", currentTimestamp);
         txtCTime.setText(currTime+" - lat: "+latitude+"\nlng: "+longitude+"\nkph: "+mph);
+
+        tEnvia = new TreadEnviaServidor();
+        tEnvia.latitude = latitude;
+        tEnvia.longitude = longitude;
+        tEnvia.mph = mph;
+        tEnvia.currTime = currTime;
+
+        tEnvia.execute("");
+
     }
 
 
@@ -124,7 +134,6 @@ public class MapsActivity extends FragmentActivity {
         setUpMapIfNeeded();
     }
     ////////////////////////////////////////////////
-    TreadEnviaServidor tEnvia;
     public void ClicouMemoriza(View v)
     {
         // txtCTime=(TextView)findViewById(R.id.textLatLong);
@@ -134,13 +143,6 @@ public class MapsActivity extends FragmentActivity {
         if(latitude!=0.0)
         {
             // SendPostToServer();
-            tEnvia = new TreadEnviaServidor();
-            tEnvia.latitude = latitude;
-            tEnvia.longitude = longitude;
-            tEnvia.mph = mph;
-            tEnvia.currTime = currTime;
-
-            tEnvia.execute("");
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("Local"));
 

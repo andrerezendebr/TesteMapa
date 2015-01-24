@@ -81,7 +81,7 @@ public class TreadEnviaServidor extends AsyncTask<String,String,String>
     {
         // Create a new HttpClient and Post Header
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost("http://192.168.1.107/ChildMonitor/Util/SendGlobalPosition.php");
+        HttpPost httppost = new HttpPost("http://182050c9.ngrok.com/ChildMonitor/Util/SendGlobalPosition.php");
         try {
             // Add your data
 
