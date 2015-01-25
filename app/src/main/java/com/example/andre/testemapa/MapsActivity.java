@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -52,7 +53,6 @@ public class MapsActivity extends FragmentActivity {
     double mph=0.0;
     String currTime="";
     LocationManager lm;
-    Location location;
     public TextView txtCTime;
     // java.sql.Timestamp currentTimestamp;
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,9 +82,10 @@ public class MapsActivity extends FragmentActivity {
         final String PROVIDER = lm.getBestProvider(c, true);
 
         this.myLocationListener = new MyLocationListener();
-        this.lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0.0F, this.myLocationListener);
+        // this.lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0.0F, this.myLocationListener);
         //lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0.0F, myLocationListener);
-        txtCTime.setText("Esperando GPS");
+        this.lm.requestLocationUpdates(PROVIDER, 5000, 0.0F, this.myLocationListener);
+        txtCTime.setText("Esperando Localização");
     }
 
     TreadEnviaServidor tEnvia;
@@ -100,7 +101,7 @@ public class MapsActivity extends FragmentActivity {
         System.out.println(dateFormat.format(date)); //2013/10/15 16:16:39
 
         currTime = dateFormat.format(date);
-        txtCTime.setText(currTime+" - lat: "+latitude+"\nlng: "+longitude+"\nkph: "+mph);
+        txtCTime.setText(currTime+"\nlat: "+latitude+"\nlng: "+longitude+"\nkph: "+mph);
 
         tEnvia = new TreadEnviaServidor();
         tEnvia.latitude = latitude;
@@ -110,13 +111,17 @@ public class MapsActivity extends FragmentActivity {
 
         tEnvia.execute("");
 
+        mMap.clear();
+        mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("Local"));
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 18.0f));
     }
 
 
     private double convertSpeed(float speed)
     {
-        double mph =(int)(3.6D*speed);
-        return mph;
+        return mph =(int)(3.6D*speed);
+
     }
 
 
@@ -153,7 +158,6 @@ public class MapsActivity extends FragmentActivity {
             mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("Local"));
 
         }
-        return;
     }
     ///////////////////////////////////////////////
     public static Bitmap RotateBitmap(Bitmap source, float angle)
