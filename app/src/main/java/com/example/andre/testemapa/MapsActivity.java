@@ -35,6 +35,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -53,7 +54,7 @@ public class MapsActivity extends FragmentActivity {
     LocationManager lm;
     Location location;
     public TextView txtCTime;
-    java.sql.Timestamp currentTimestamp;
+    // java.sql.Timestamp currentTimestamp;
     ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +93,13 @@ public class MapsActivity extends FragmentActivity {
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         mph = convertSpeed(location.getSpeed());
-        currentTimestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
-        currTime = String.format("%1$TD %1$TT", currentTimestamp);
+        // currentTimestamp = new java.sql.Timestamp(Calendar.getInstance().getTime().getTime());
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        System.out.println(dateFormat.format(date)); //2013/10/15 16:16:39
+
+        currTime = dateFormat.format(date);
         txtCTime.setText(currTime+" - lat: "+latitude+"\nlng: "+longitude+"\nkph: "+mph);
 
         tEnvia = new TreadEnviaServidor();
